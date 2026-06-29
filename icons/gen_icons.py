@@ -1,23 +1,28 @@
 #!/usr/bin/env python3
-"""Generate Catsnip extension icons — a bold cat face inside crop-region brackets
-(no external deps).
+"""Generate Catsnip extension icons — a gray tabby cat face inside crop-region
+brackets (no external deps).
 
 The mark fuses the two ideas the brand needs to convey:
-  * CAT  — a bold, head-on white cat face (ears, eyes, pink nose, whiskers).
+  * CAT  — a head-on gray tabby cat face (ears with inner shading, forehead
+           stripes, eyes, pink nose, whiskers).
   * SNIP — four white corner brackets, the universal "select a region" /
            screenshot motif, framing the cat.
 
-It is size-adaptive. At toolbar size (16px) the crop brackets + whiskers would
-smear the tiny tile into a blob, so they are dropped and the cat face is drawn
-bolder and edge-to-edge — the strongest, cleanest cat cue. At 32/48/128px there
-is room for the full composition, so the brackets and whiskers come back and the
-face tucks in to give them corner space. make() supersamples for smooth edges."""
+It is size-adaptive. At toolbar size (16px) the crop brackets, whiskers, and
+tabby stripes would smear the tiny tile into a blob, so they are dropped and the
+gray cat face is drawn bolder and edge-to-edge — the strongest, cleanest cat
+cue. At 32/48/128px there is room for the full composition (brackets, stripes,
+whiskers) and the face tucks in to give them space. make() supersamples for
+smooth edges."""
 import struct, zlib, os
 
 BLUE    = (37, 99, 235)    # #2563EB  background top (royal blue)
-BLUE_DK = (30, 64, 175)    # #1E40AF  background bottom + eye holes
-WHITE   = (255, 255, 255)  # cat face + crop brackets
-PINK    = (249, 168, 212)  # #F9A8D4  tiny nose accent
+BLUE_DK = (30, 64, 175)    # #1E40AF  background bottom
+WHITE   = (255, 255, 255)  # crop brackets (the snip motif)
+FUR     = (206, 212, 221)  # #CED4DD  light silver-gray tabby fur
+STRIPE  = (100, 108, 124)  # #646C7C  darker gray tabby markings
+EYE     = (43, 48, 59)     # #2B303B  charcoal eyes
+PINK    = (249, 168, 212)  # #F9A8D4  nose accent
 
 
 def rounded(x, y, n, r):
@@ -42,8 +47,9 @@ def _point_in_tri(px, py, ax, ay, bx, by, cx, cy):
 def snip_pixel(nx, ny, tiny=False):
     """Return (r,g,b) for normalized coords (0–1), or None for the background.
 
-    `tiny` (set by make() for 16px) drops the crop brackets + whiskers and uses
-    a bolder, edge-to-edge cat face so the toolbar icon stays crisp."""
+    `tiny` (set by make() for 16px) drops the crop brackets, whiskers, and tabby
+    stripes and uses a bolder, edge-to-edge gray cat face so the toolbar icon
+    stays crisp."""
 
     # --- Snip identity: four corner crop brackets (select-region motif). ---
     # Drawn only when there is room (not on the 16px toolbar render).
@@ -70,41 +76,56 @@ def snip_pixel(nx, ny, tiny=False):
     else:
         ear_l = (0.31, 0.12, 0.50, 0.47, 0.28, 0.47)
         ear_r = (0.69, 0.12, 0.72, 0.47, 0.50, 0.47)
+        inner_l = (0.331, 0.213, 0.445, 0.423, 0.313, 0.423)  # inner-ear shading
+        inner_r = (0.669, 0.213, 0.555, 0.423, 0.687, 0.423)
         hx, hy, rx, ry = 0.5, 0.62, 0.275, 0.265
         eyes, erx, ery = ((0.41, 0.61), (0.59, 0.61)), 0.062, 0.082
         nose = (0.455, 0.695, 0.545, 0.695, 0.5, 0.76)
 
-    # Ears: two upright triangles.
+    # Ears: two upright triangles, with darker inner-ear shading at larger sizes.
     if _point_in_tri(nx, ny, *ear_l) or _point_in_tri(nx, ny, *ear_r):
-        return WHITE
+        if not tiny and (_point_in_tri(nx, ny, *inner_l) or _point_in_tri(nx, ny, *inner_r)):
+            return STRIPE
+        return FUR
 
-    # Head: a rounded ellipse carrying the eyes + nose.
+    # Head: a rounded ellipse carrying the eyes, nose, and tabby stripes.
     dx, dy = (nx - hx) / rx, (ny - hy) / ry
     if dx * dx + dy * dy <= 1.0:
         for ex, ey in eyes:
             edx, edy = (nx - ex) / erx, (ny - ey) / ery
             if edx * edx + edy * edy <= 1.0:
-                return BLUE_DK  # eye = background-dark, reads as a hole
+                return EYE
         if _point_in_tri(nx, ny, *nose):
             return PINK
-        return WHITE
+        # Tabby markings (larger sizes only): forehead stripes + cheek stripes.
+        if not tiny:
+            # Three vertical forehead stripes (the tabby "M").
+            if 0.40 <= ny <= 0.55:
+                if abs(nx - 0.50) <= 0.017:
+                    return STRIPE
+                if ny >= 0.425 and (abs(nx - 0.432) <= 0.013 or abs(nx - 0.568) <= 0.013):
+                    return STRIPE
+            # A short cheek stripe radiating below each eye.
+            if abs(ny - 0.70) <= 0.013 and (0.27 <= nx <= 0.38 or 0.62 <= nx <= 0.73):
+                return STRIPE
+        return FUR
 
     # Whiskers (larger sizes only): short strokes off the cheeks, kept clear of
     # the corner brackets above and below.
     if not tiny:
-        wt = 0.022
+        wt = 0.020
         for wy in (0.625, 0.69):
             if 0.05 <= nx <= 0.225 and abs(ny - wy) <= wt:
-                return WHITE
+                return FUR
             if 0.775 <= nx <= 0.95 and abs(ny - wy) <= wt:
-                return WHITE
+                return FUR
 
     return None
 
 
 def make(n):
     r = n * 0.22
-    tiny = n <= 20                 # 16px: bold cornerless face, no brackets
+    tiny = n <= 20                 # 16px: bold cornerless gray face, no brackets/stripes
     ss = 4 if n <= 48 else 2       # more sub-pixels at tiny sizes for smooth edges
     inv = 1.0 / (ss * ss)
     buf = bytearray()
