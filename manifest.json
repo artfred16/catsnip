@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Catsnip",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Snip any region — inside or outside the browser — then crop, annotate, OCR, copy, and save. Everything stays on your device.",
   "author": "artfred16",
   "homepage_url": "https://artfred16.github.io",
