@@ -1,0 +1,56 @@
+/* Snip — region overlay styles (injected over the page during a region snip). */
+.snip-ov-root {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  cursor: crosshair;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.snip-ov-frozen {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: fill;
+  pointer-events: none;
+}
+.snip-ov-dim {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.45);
+  pointer-events: none;
+}
+.snip-ov-sel {
+  position: fixed;
+  border: 1.5px solid #2563eb;
+  outline: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 0 100vmax rgba(17, 24, 39, 0.45);
+  pointer-events: none;
+}
+.snip-ov-sel[hidden] { display: none; }
+.snip-ov-size {
+  position: absolute;
+  top: -24px;
+  left: 0;
+  padding: 1px 7px;
+  background: #2563eb;
+  color: #fff;
+  font: 600 12px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+.snip-ov-hint {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 16px;
+  background: rgba(17, 24, 39, 0.88);
+  color: #fff;
+  font: 500 13px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  border-radius: 999px;
+  pointer-events: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+.snip-ov-hint b { font-weight: 700; }

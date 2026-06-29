@@ -1,0 +1,24 @@
+# macOS / OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# Logs / temp
+*.log
+.cache/
+
+# Packaged builds
+dist/
+*.zip
+*.crx
+*.pem
+
+# Vendored OCR engine (fetched locally by the fetch-ocr step; not committed)
+lib/tesseract/
+
+# Promo / listing assets (local source images, not part of the repo)
+promo-src/

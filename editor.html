@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="editor.css" />
+  <title>Catsnip — Editor</title>
+</head>
+<body>
+  <header class="app-header">
+    <div class="wrap brand">
+      <img src="icons/icon32.png" alt="" class="brand-logo" />
+      <div>
+        <h1>Catsnip</h1>
+        <p class="tagline" id="subtitle">Editor</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- capturing (desktop) -->
+  <section id="capturing" class="state center" hidden>
+    <div class="spinner-lg"></div>
+    <p class="status-text">Capturing…</p>
+  </section>
+
+  <!-- empty / desktop chooser -->
+  <section id="empty" class="state center" hidden>
+    <svg viewBox="0 0 24 24" class="empty-icon" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="1.5"/><path d="M7 20h10M9.5 17l-.5 3M14.5 17l.5 3"/></svg>
+    <h2 id="empty-title">Snip a screen or window</h2>
+    <p class="status-text" id="empty-sub">Choose any display or app window — it works even outside the browser.</p>
+    <button id="choose-desktop" class="btn btn-primary" type="button">Choose screen or window</button>
+    <p class="status-text small">For page snips (region, visible area, full page), click the Catsnip icon in your toolbar.</p>
+  </section>
+
+  <!-- error -->
+  <section id="error-state" class="state center" hidden>
+    <p id="error-text" class="status-text error"></p>
+    <button id="error-close" class="btn btn-secondary" type="button">Close tab</button>
+  </section>
+
+  <!-- editor -->
+  <section id="editor" class="state" hidden>
+    <div class="toolbar wrap">
+      <div class="tool-group" id="tools" role="toolbar" aria-label="Tools">
+        <button class="tool" data-tool="select" title="Select / move / resize (V)"><svg viewBox="0 0 24 24"><path d="M5 3l7 16 2.5-6.5L21 10z"/></svg></button>
+        <button class="tool" data-tool="crop" title="Crop (C)"><svg viewBox="0 0 24 24"><path d="M6 2v16h16M2 6h16v16"/></svg></button>
+        <span class="tool-sep"></span>
+        <button class="tool" data-tool="arrow" title="Arrow (A)"><svg viewBox="0 0 24 24"><path d="M5 19L19 5M19 5h-7M19 5v7"/></svg></button>
+        <button class="tool" data-tool="rect" title="Rectangle (R)"><svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="1"/></svg></button>
+        <button class="tool" data-tool="ellipse" title="Ellipse (O)"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="8" ry="6"/></svg></button>
+        <button class="tool" data-tool="pen" title="Pen (P)"><svg viewBox="0 0 24 24"><path d="M4 20c3 0 3-4 6-4s3 4 6 4M14 4l6 6L8 22l-6 0 0-6z"/></svg></button>
+        <button class="tool" data-tool="highlight" title="Highlighter (H)"><svg viewBox="0 0 24 24"><path d="M4 20h16M5 16l3 3 9-9-3-3-9 9z"/></svg></button>
+        <button class="tool" data-tool="text" title="Text (T)"><svg viewBox="0 0 24 24"><path d="M5 6h14M12 6v13M9 19h6"/></svg></button>
+        <button class="tool" data-tool="blur" title="Blur / redact (B)"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 8h.01M12 8h.01M16 8h.01M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/></svg></button>
+      </div>
+
+      <div class="tool-group">
+        <div class="swatches" id="swatches"></div>
+        <input id="color" type="color" value="#ef4444" title="Custom color" />
+      </div>
+
+      <div class="tool-group width-group">
+        <label for="width" class="mini-label">Size</label>
+        <input id="width" type="range" min="1" max="28" step="1" value="4" />
+      </div>
+
+      <div class="tool-group">
+        <button id="undo" class="tool wide" title="Undo (⌘Z)"><svg viewBox="0 0 24 24"><path d="M9 14L4 9l5-5M4 9h11a5 5 0 0 1 0 10h-3"/></svg></button>
+        <button id="redo" class="tool wide" title="Redo (⌘⇧Z)"><svg viewBox="0 0 24 24"><path d="M15 14l5-5-5-5M20 9H9a5 5 0 0 0 0 10h3"/></svg></button>
+        <button id="del-sel" class="tool wide" title="Delete selected (Del)" disabled><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13M10 11v6M14 11v6"/></svg></button>
+      </div>
+
+      <div class="tool-group push">
+        <button id="grab-text" class="btn btn-secondary" type="button" title="Select &amp; copy text off the image">Grab text</button>
+        <button id="ocr" class="btn btn-secondary" type="button" title="Extract all text to a side panel">Extract text</button>
+      </div>
+
+      <div class="tool-group">
+        <div class="segmented" id="format-seg" role="radiogroup" aria-label="Image format">
+          <label><input type="radio" name="format" value="png" checked /><span>PNG</span></label>
+          <label><input type="radio" name="format" value="jpeg" /><span>JPEG</span></label>
+        </div>
+        <button id="copy" class="btn btn-secondary" type="button">Copy</button>
+        <button id="save" class="btn btn-primary" type="button">Save</button>
+      </div>
+    </div>
+
+    <div class="subbar wrap">
+      <label class="bg-toggle"><input id="bg-enabled" type="checkbox" checked /><span>Background</span></label>
+      <div class="bg-controls" id="bg-controls">
+        <div class="swatches" id="bg-swatches"></div>
+        <input id="bg-color" type="color" class="bg-color-input" title="Custom background color" value="#1e293b" />
+        <span class="tool-sep"></span>
+        <label class="mini-label" for="bg-pad">Padding</label>
+        <input id="bg-pad" type="range" min="0" max="25" step="1" value="8" />
+        <label class="mini-label" for="bg-radius">Radius</label>
+        <input id="bg-radius" type="range" min="0" max="12" step="1" value="4" />
+        <label class="bg-shadow"><input id="bg-shadow" type="checkbox" checked /><span>Shadow</span></label>
+      </div>
+    </div>
+
+    <div class="body wrap">
+      <aside class="gallery" id="gallery-pane">
+        <div class="gallery-head">
+          <span id="gallery-count">1 snip</span>
+          <button id="save-all" class="link-btn" type="button">Save all (ZIP)</button>
+        </div>
+        <ul id="gallery" class="gallery-list"></ul>
+        <button id="add-desktop" class="btn btn-secondary add-snip" type="button">+ Screen / window</button>
+      </aside>
+
+      <section class="stage" id="stage">
+        <div id="text-select-bar" class="ts-bar" hidden>
+          <span id="ts-msg" class="ts-msg">Text mode — drag to select, then ⌘/Ctrl+C to copy.</span>
+          <button id="ts-copy-all" class="link-btn" type="button">Copy all text</button>
+          <button id="ts-done" class="link-btn" type="button">Done</button>
+        </div>
+        <div class="canvas-shell">
+          <canvas id="view"></canvas>
+          <textarea id="text-input" class="text-input" wrap="off" spellcheck="false" hidden></textarea>
+          <div id="text-layer" class="text-layer" hidden></div>
+        </div>
+        <p id="hint" class="hint"></p>
+      </section>
+
+      <aside class="ocr-pane" id="ocr-pane" hidden>
+        <div class="ocr-head">
+          <strong>Extracted text</strong>
+          <div>
+            <button id="ocr-copy" class="link-btn" type="button">Copy</button>
+            <button id="ocr-close" class="link-btn" type="button">Close</button>
+          </div>
+        </div>
+        <div id="ocr-status" class="status-text small" hidden></div>
+        <textarea id="ocr-text" class="ocr-text" spellcheck="false" placeholder="Recognized text will appear here…"></textarea>
+      </aside>
+    </div>
+
+    <p id="toast" class="toast" hidden></p>
+  </section>
+
+  <script src="lib/jszip.min.js"></script>
+  <script src="editor.js"></script>
+</body>
+</html>

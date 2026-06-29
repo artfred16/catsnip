@@ -1,0 +1,8 @@
+# Keep GitHub's auto-generated "Source code" release archives lean:
+# omit dev/build tooling that isn't part of the shipped extension.
+# (Files stay in the repo; they're just excluded from `git archive` output.)
+build.sh           export-ignore
+fetch-ocr.sh       export-ignore
+icons/gen_icons.py export-ignore
+.gitignore         export-ignore
+.gitattributes     export-ignore
