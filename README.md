@@ -121,6 +121,10 @@ Manifest V3 · `chrome.tabs.captureVisibleTab` · `chrome.desktopCapture` + `get
 `chrome.scripting` · `chrome.downloads` · `chrome.storage` · OffscreenCanvas · Canvas 2D ·
 JSZip 3.10 · Tesseract.js 5 (vendored, offline).
 
+## License
+
+**Proprietary — © 2026 Artfred Dela Cruz. All rights reserved.** This source is published for viewing and portfolio purposes only; no permission is granted to use, copy, modify, or distribute it without prior written consent. See [LICENSE](LICENSE).
+
 ## Author
 
 Made by [artfred16](https://artfred16.github.io).
