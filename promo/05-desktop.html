@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><link rel="stylesheet" href="promo.css">
+<style>
+  .desk-scene { position: relative; width: 820px; height: 460px; border-radius: 12px; overflow: hidden;
+    background: linear-gradient(160deg, #1e293b, #0f172a); box-shadow: 0 30px 70px rgba(2,6,23,.55); }
+  .menubar { height: 30px; background: rgba(255,255,255,.08); display: flex; align-items: center; gap: 16px; padding: 0 16px; }
+  .menubar .m { width: 42px; height: 8px; border-radius: 4px; background: rgba(255,255,255,.35); }
+  .menubar .m.s { width: 24px; }
+  .floatwin { position: absolute; border-radius: 10px; overflow: hidden; box-shadow: 0 18px 40px rgba(0,0,0,.5); }
+  .floatwin .tb { height: 30px; background: #2b303b; display: flex; align-items: center; gap: 6px; padding: 0 10px; }
+  .floatwin .tb .dot { width: 10px; height: 10px; }
+  .floatwin .bd { background: #fff; }
+  .appA { left: 70px; top: 78px; width: 360px; }
+  .appA .bd { height: 230px; padding: 16px; }
+  .appA .h { height: 16px; width: 60%; background: #e7e9f2; border-radius: 5px; margin-bottom: 14px; }
+  .appA .l { height: 10px; background: #eef0f6; border-radius: 5px; margin-bottom: 10px; }
+  .appA .l.s { width: 70%; }
+  .appA .chart { height: 90px; margin-top: 12px; border-radius: 8px; background: linear-gradient(120deg, #6366f1, #22d3ee); }
+  .appB { right: 64px; top: 150px; width: 320px; }
+  .appB .bd { height: 200px; background: linear-gradient(135deg, #f472b6, #fb7185); }
+  /* capture marquee over app A */
+  .capframe { position: absolute; left: 70px; top: 78px; width: 360px; height: 260px; }
+  .caphandle.nw { left: -6px; top: -6px; } .caphandle.ne { right: -6px; top: -6px; }
+  .caphandle.sw { left: -6px; bottom: -6px; } .caphandle.se { right: -6px; bottom: -6px; }
+</style></head>
+<body>
+  <div class="tile">
+    <div class="head">
+      <div class="brandrow"><img src="../icons/icon128.png" alt=""><b>Catsnip</b></div>
+      <div class="headline">Capture anything — even outside the browser</div>
+      <div class="sub">Grab any screen or app window with the system picker.</div>
+    </div>
+    <div class="stage">
+      <div class="desk-scene">
+        <div class="menubar"><div class="m"></div><div class="m s"></div><div class="m"></div><div class="m s"></div></div>
+        <div class="floatwin appB"><div class="tb"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div><div class="bd"></div></div>
+        <div class="floatwin appA"><div class="tb"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+          <div class="bd"><div class="h"></div><div class="l"></div><div class="l s"></div><div class="chart"></div></div>
+        </div>
+        <div class="capframe">
+          <span class="caphandle nw"></span><span class="caphandle ne"></span><span class="caphandle sw"></span><span class="caphandle se"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body></html>

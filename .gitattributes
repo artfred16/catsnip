@@ -4,5 +4,6 @@
 build.sh           export-ignore
 fetch-ocr.sh       export-ignore
 icons/gen_icons.py export-ignore
+promo/             export-ignore
 .gitignore         export-ignore
 .gitattributes     export-ignore

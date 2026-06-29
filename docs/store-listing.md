@@ -57,12 +57,14 @@ PRIVATE BY DESIGN
 • Minimal permissions — your captures never leave your device
 ```
 
-**Screenshots** (upload 3–5 at 1280×800 or 640×400). Suggested shots + captions:
-1. Region capture in progress (the marquee over a page) — *"Snip any region with a drag."*
-2. The editor with arrows/text/blur on a snip — *"Annotate: arrows, text, highlight, blur."*
-3. A snip on a gradient background frame — *"Polish it with a background, rounded corners, and shadow."*
-4. Grab-text mode with text selected on the image — *"Select and copy text right off the image."*
-5. The "Screen or window" picker / a desktop capture — *"Capture anything — even outside the browser."*
+**Screenshots** (upload all five — already rendered at 1280×800 in `dist/promo/`):
+1. `screenshot-01.png` — "Snip any region in a drag" (region marquee).
+2. `screenshot-02.png` — "Mark it up in seconds" (annotations).
+3. `screenshot-03.png` — "Make it look great" (background frame).
+4. `screenshot-04.png` — "Grab text off any image" (text selection).
+5. `screenshot-05.png` — "Capture anything — even outside the browser" (desktop capture).
+
+Regenerate any time with `./promo/shoot.sh` (sources in `promo/`; see the `generate-promo` skill).
 
 **Small promo tile** (440×280, optional) and **Marquee** (1400×560, optional): logo + the summary line.
 
